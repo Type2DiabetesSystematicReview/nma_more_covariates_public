@@ -1,0 +1,13 @@
+---
+title: "index"
+format: html
+editor: source
+---
+
+[![DOI](https://zenodo.org/badge/910548668.svg)](https://zenodo.org/badge/latestdoi/910548668)
+
+
+[Analysis plan](https://dmcalli2.github.io/nma_more_covariates_public/analysis_plan.html)
+
+
+
