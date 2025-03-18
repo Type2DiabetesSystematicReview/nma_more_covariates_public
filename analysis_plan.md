@@ -135,7 +135,7 @@ Data is generally either missing or available for all (or almost all) participan
 
 Consequent on this pattern of data availability, we will use the following limited set of covariates for the main analyses:-
 
--   MACE trials - Age, sex, BMI, duration of diabetes, HBA1c at baseline, race, eGFR and coronary heart disease at baseline
+-   MACE trials - Age, sex, BMI, duration of diabetes, HBA1c at baseline, race and eGFR
 -   HbA1c trials - Age, sex, BMI, duration of diabetes, HBA1c at baseline
 
 This covariate selection differs from that specified in the protocol paper, where we stated "For the main analysis, we will include the following covariates: age, duration of diabetes, HbA1c, estimated glomerular filtration rate (eGFR), total cholesterol, high-density lipoprotein cholesterol, systolic blood pressure, diastolic blood pressure, BMI, sex, ethnicity, smoking status, history of cardiovascular disease, history of heart failure, metformin use and insulin use" ([see BMJ Open paper](https://bmjopen.bmj.com/content/12/10/e066491.long)). The difference is due to a better understanding of data availability in the aggregate-level trials and of the distribution of the baseline covariates in the IPD.
