@@ -76,7 +76,7 @@ In developing and undertaking the analysis for the age-sex HTE paper we made a n
 -   choice of statistical distributions for age (ie truncated normal) and HbA1c at baseline (normal)
 -   method for estimating parameters of distributions for representing continuous variables where a different summary statistic was provided
 -   number of integration points in analysis of aggregate data (one - ie the mean for HbA1c and derived via the multinma algorithm for MACE)
--   For IPD trials, missing outcome data was handled using last observation carried forward. For aggregate-level trials, if the outcome was not reported these were excluded
+-   For aggregate-level trials, if the outcome was not reported these were excluded
 -   selecting linear models for HbA1c and Cox models for MACE for the trial-level models
 -   selecting regression outputs for the IPD and arm-level data in preference to contrast-level data for the aggregate trials when fitting the ML-NMR models
 
@@ -135,11 +135,10 @@ Data is generally either missing or available for all (or almost all) participan
 
 Consequent on this pattern of data availability, we will use the following limited set of covariates for the main analyses:-
 
--   MACE trials - Age, sex, BMI, duration of diabetes, HBA1c at baseline, race, eGFR and cardiovascular disease (separately considered as cerebrovascular, coronary heart disease and peripherovascular) at baseline
+-   MACE trials - Age, sex, BMI, duration of diabetes, HBA1c at baseline, race, eGFR and coronary heart disease at baseline
 -   HbA1c trials - Age, sex, BMI, duration of diabetes, HBA1c at baseline
 
 This covariate selection differs from that specified in the protocol paper, where we stated "For the main analysis, we will include the following covariates: age, duration of diabetes, HbA1c, estimated glomerular filtration rate (eGFR), total cholesterol, high-density lipoprotein cholesterol, systolic blood pressure, diastolic blood pressure, BMI, sex, ethnicity, smoking status, history of cardiovascular disease, history of heart failure, metformin use and insulin use" ([see BMJ Open paper](https://bmjopen.bmj.com/content/12/10/e066491.long)). The difference is due to a better understanding of data availability in the aggregate-level trials and of the distribution of the baseline covariates in the IPD.
-
 
 
 ::: {#tbl-macecum .cell tbl-cap='Cumulative proportion of trials with each combination of variables (ie that variable and variables higher up the table available)' tbl-subcap='["MACE trials","HbA1c trials"]'}
@@ -189,7 +188,6 @@ This covariate selection differs from that specified in the protocol paper, wher
 
 :::
 :::
-
 
 
 We propose to include these covariates in trial-level models and ML-NMR models of HbA1c and MACE. We will include terms for both main effects and covariate-treatment interactions (except for HbA1c in the HbA1c outcome trials, where it will only be included as a main effect). We chose these variables as they are the most commonly reported for MACE and HbA1c trials respectively and the number of trials reporting all of these variables is reasonable. The high-level of reporting also reflects the perceived importance of these variables in the clinical community. Having fitted the models we will calibrate the results to the Scottish Diabetes Register (see @sec-calibration for details).
@@ -243,19 +241,21 @@ See @sec-marginalscat for details of how this variable will be included in the m
 
 # Secondary analysis
 
+In the secondary analysis we will examine covariate-treatment interactions for the remaining variables shown in Table 1, but which are not included in the main analyses. Initially, we had planned to fit these using both IPD and aggregate level data. However, given the relatively small proportion of aggregate level trials which has reported on these covariates, we will instead confine the secondary analyses to the IPD trials.
+
 For the secondary analysis we propose the following approaches for both MACE trials and HbA1c trials:-
 
-1.  Fit models with the main analysis variables (@sec-mainanalysis) plus each of the remaining variables (or variables calculated using these varaibles such as HDL/total cholesterol ratio) from @tbl-bascov, **in turn**, using a complete case approach (all IPD trials and all aggregate-level trials reporting the data).
+1.  Fit models with the main analysis variables (@sec-mainanalysis) plus each of the remaining variables (or variables calculated using these variables such as HDL/total cholesterol ratio) from @tbl-bascov, **in turn**, using a complete case approach.
 2.  Fit a model including the main analysis variables and all variables found (in step 1) not to have a "weak" covariate-treatment interaction. By "weak" interactions we mean those where the ML-NMR point estimate (of the log-hazard ratio for the MACE analysis and the change in HBA1c standardised to the pre-post difference in HbA1c for the HbA1c analysis trials) lies between -0.05 and 0.05 (per standard deviation increment in the covariate for continuous variables and as absolute values for binary variables). Hence, it will only be possible to fit trial-level models for step 2 *after* fitting the ML-NMR models at step 1. Again we will use a complete case approach.
 3.  Fit a minimal model including the main analysis variables and all variables found (in step 2) not to have a "weak" covariate-treatment interaction, again using a complete case approach. This last model will be calibrated to the Scottish population (see @sec-calibration).
 
 Note that in step two we could have used the known differences between the trial and target population to indicate whether an estimated interaction-effect was likely to be large enough to matter. If the difference in distribution of a covariate between the trials and target population is small, a larger interaction would be needed to cause a difference in the average treatment effect. The converse is also true. However, we have opted not to do so in order that that the outputs of the ML-NMR models are useful across multiple settings, not just the Scottish population.
 
-Since this variable selection approach includes examining coefficients then excluding weak associations, there is some danger of over-estimating the magnitude of the coefficients which remain. This is only an issue for secondary analysis 2 (above). However, we do not think it is feasible to run a model using a shrinkage-type approach (eg LASSO) while including both IPD and aggregate-level trials for which different variables are available/reported, and are therefore willing to accept this limitation.
+Since this variable selection approach includes examining coefficients then excluding weak associations, there is some danger of over-estimating the magnitude of the coefficients which remain. This is only an issue for secondary analysis 2 (above). If we have sufficient resource to add the ability to specify shrinkage priors using the software we are using to fit the NMA models, we will explore the use of shrinkage priors.
 
 # IPD Trial-level models {#sec-triallvl}
 
-As for the analysis in the previous manuscript, we will fit IPD trial level models of MACE on the treatment arm, each covariate (selected as above) and the covariate treatment interactions. For MACE we will fit Cox models and for HbA1c we will fit linear models.
+As for the analysis in the previous manuscript, we will fit IPD trial level models of MACE on the treatment arm, each covariate (selected as above) and the covariate treatment interactions. For MACE we will fit Cox models and for HbA1c we will fit linear models. However, in the current analysis we will fit linear mixed models, treating time as a continuous variable. For these analysis we will re-scale time to range from 0.01 (day one) to 1 (last day as defined in the previous manuscript). For the main analysis we will treat time as linear and will include both slopes and intercepts as random effects. Only the fixed effects (with their corresponding variances/covariances) will be included in the NMA.
 
 ## Continuous variables which have been binned
 
@@ -266,7 +266,7 @@ For each binned trial - ie those where the variable (duration or BMI) was binned
 1. Binned the same variable for all trials where it is provided as a continuous variable
 2. Selected the trial with the most similar distribution to that binned trial (using the Chi-squared statistic)
 3. Obtained the mean value within each level for that most similar trial
-4. Applied the mean value to the binned trial for each level for the binned variable
+4. Applied the mean value to the binned trials for each level of the binned variable
 
 This approach could be extended to allow for uncertainty by replacing steps 3 and 4 with bootstrap sampling (sampling with replacement). However, we do not think that the benefits of doing so justify the added complexity.
 
@@ -289,12 +289,6 @@ Aggregate-level trial reports rarely provide information on which probabilistic 
 - Duration of type 2 diabetes - gamma for all trials EXCEPT ones with a mean duration of less than one year, in which case use log-normal
 - BMI - log-normal distribution
 - eGFR - Weibull distribution
-- Systolic blood pressure - log-normal distribution
-- HDL and total cholesterol ratio - both log-normal (see below)
-
-All of the above distributions will be truncated if there are relevant eligibility criteria (eg minimum of one year with type 2 diabetes). We had originally intended to use mid-blood pressure (defined as 0.5 × (systolic blood pressure + diastolic blood pressure)). However, we have instead opted for systolic blood pressure alone because more aggregate level trials report systolic blood pressure than report diastolic blood pressure.
-
-For Total:HDL ratio (the ratio between total and HDL cholesterol) we have chosen a log-normal distribution because, if total cholesterol and HDL cholesterol are both log-normally distributed the ratio is also log-normally distributed. This is particularly useful for total:HDL ratio because some trials report the ratio and other trials the components. Therefore, for the aggregate data, to calculate the total:HDL cholesterol ratio from HDL and total cholesterol ratio, we will sample from a multivariate log-normal distribution (assuming the same correlation as described in @sec-correlations). To avoid sampling error, we will obtain a very large number of samples from this distribution and use these samples to calculate the mean and standard deviation of the log-normally distributed HDL:total cholesterol ratio.
 
 Where aggregate-level trials do not provide the relevant parameters needed for the chosen statistical distribution (as will usually be the case) we will estimate these by numerical optimisation based on the statistics which are reported (eg means, standard deviations, quantiles - either directly or calculable from the number of participants within bins with most trials reporting means and standard deviations). This is similar to the approach we used in the previous paper. The need to perform this estimation is the reason why we confined ourselves to one or two-parameter distributions when checking the fit of different distributions to the trial IPD.
 
@@ -302,15 +296,11 @@ Where aggregate-level trials do not provide the relevant parameters needed for t
 
 For binary variables we will assume a Bernoulli distribution.
 
-
-
 ::: {.cell}
 
 :::
 
 
-
-To allow it to be fitted using a Bernoulli distribution, smoking status will be simplified to a binary variable (current/every). Some IPD trials reported 3-levels - never, former and current, but most reported former or never versus current. Of the 74 aggregate level trials with smoking data, most (69) reported current smoking. @fig-smoking shows the breakdown of categories by trial and the proportion of ever smokers who are current smokers for the 29 trials where this was presented. On this basis we propose modelling smoking status as former or never versus current. For the 5 trials which only report smoking as ever or current, we propose simply imputing the percentage of current smokers by applying the proportion of current smokers (denominator ever/current) from those trials where this information is available.
 
 ## Covariate marginal distributions  - categorical {#sec-marginalscat}
 
